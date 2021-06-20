@@ -47,16 +47,25 @@ const start = async () => {
           
         }
       },
+    
       {
-         $project: { secondCollection: 0} 
+        $group : {
+          _id: "$country",
+          allDiffs: {$addToSet: "$difs"},
+          count:{$sum:1},
+          longitude: {$addToSet: "$longitude"},
+          latitude: {$addToSet: "$latitude"},
+
+       }
       },
-      // Write result in new collection
       {
         $out: { db: dbName, coll: "thirdCollection" } 
       }
         
     ]);
-    newColl.next(); 
+    newColl.next( function(err, res){
+      console.log(res)
+    }); 
   } 
   catch (error) {
     console.log(error);
